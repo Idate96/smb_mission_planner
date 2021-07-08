@@ -2,8 +2,8 @@
 <launch>
   <arg name="config_file_path" default="$(find smb_mission_planner)/configs/simple_mission.yaml"/>
   <arg name="waypoint_topic_name" default="/move_base_simple/goal"/>
-  <arg name="base_pose_topic_name" default="/camera/odom/sample "/>
-  <!-- <arg name="base_pose_topic_name" default="/icp_node/base_pose_map"/> -->
+  <!-- <arg name="base_pose_topic_name" default="/camera/odom/sample "/> -->
+  <arg name="base_pose_topic_name" default="/icp_node/base_pose_map"/>
   <arg name="enable_viewer" default="false"/>
 
   <node pkg="smb_mission_planner"
