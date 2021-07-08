@@ -44,6 +44,7 @@ class DefaultMission(smach.State):
         self.base_pose_subscriber = rospy.Subscriber(
             topic_names["base_pose"], Odometry, self.basePoseCallback
         )
+
         while (
             self.waypoint_pose_publisher.get_num_connections() == 0
             and not rospy.is_shutdown()
