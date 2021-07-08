@@ -151,7 +151,8 @@ class DefaultMission(smach.State):
         roll_rad, pitch_rad, yaw_rad = tf.transformations.euler_from_quaternion(
             explicit_quat
         )
-
+        # odom -> map
+        
         self.estimated_x_m = x_m
         self.estimated_y_m = y_m
         self.estimated_yaw_rad = yaw_rad
