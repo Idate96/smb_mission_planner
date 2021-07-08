@@ -68,7 +68,7 @@ class DefaultMission(smach.State):
 
         self.countdown_s = 60
         self.countdown_decrement_s = 1
-        self.distance_to_waypoint_tolerance_m = 0.6
+        self.distance_to_waypoint_tolerance_m = 1.5
         self.angle_to_waypoint_tolerance_rad = 0.7
 
     def execute(self, userdata):
@@ -127,7 +127,7 @@ class DefaultMission(smach.State):
         pose_stamped_msg.header.seq = 0
         pose_stamped_msg.header.stamp.secs = rospy.get_rostime().secs
         pose_stamped_msg.header.stamp.nsecs = rospy.get_rostime().nsecs
-        pose_stamped_msg.header.frame_id = "tracking_camera_odom"
+        pose_stamped_msg.header.frame_id = "map"
         pose_stamped_msg.pose.position.x = x_m
         pose_stamped_msg.pose.position.y = y_m
         pose_stamped_msg.pose.position.z = 0.0
@@ -144,17 +144,19 @@ class DefaultMission(smach.State):
     def basePoseCallback(self, Odometry_msg):
         rospy.loginfo_once("Estimated base pose received from now on.")
 
-        x_m = Odometry_msg.pose.pose.position.x
-        y_m = Odometry_msg.pose.pose.position.y
-        quaternion = Odometry_msg.pose.pose.orientation
-        explicit_quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
-        roll_rad, pitch_rad, yaw_rad = tf.transformations.euler_from_quaternion(
-            explicit_quat
-        )
+        # x_m = Odometry_msg.pose.pose.position.x
+        # y_m = Odometry_msg.pose.pose.position.y
+        # quaternion = Odometry_msg.pose.pose.orientation
+        # explicit_quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+        # roll_rad, pitch_rad, yaw_rad = tf.transformations.euler_from_quaternion(
+        #     explicit_quat
+        # )
         # odom -> map
-        
-        self.estimated_x_m = x_m
-        self.estimated_y_m = y_m
+        [pos, rot] = tf.listener.lookupTransform("map", "base_link", rospy.Time(0))
+
+        self.estimated_x_m = pos[0]
+        self.estimated_y_m = pos[1]
+        roll_rad, pitch_rad, yaw_rad = tf.transformations.euler_from_quaternion(rot)
         self.estimated_yaw_rad = yaw_rad
 
     def reachedWaypointWithTolerance(self):
@@ -170,7 +172,7 @@ class DefaultMission(smach.State):
             angle_to_waypoint_satisfied = (
                 angle_to_waypoint <= self.angle_to_waypoint_tolerance_rad
             )
-            # rospy.loginfo(distance_to_waypoint)
+            #  print(distance_to_waypoint)
             return distance_to_waypoint_satisfied and angle_to_waypoint_satisfied
         except:
             rospy.logwarn("No estimated base pose received yet.")
