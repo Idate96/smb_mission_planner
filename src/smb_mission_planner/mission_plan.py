@@ -46,6 +46,8 @@ class DefaultMission(smach.State):
             topic_names["base_pose"], Odometry, self.basePoseCallback
         )
 
+        self.tf_listener = tf.TransformListener()
+
         while (
             self.waypoint_pose_publisher.get_num_connections() == 0
             and not rospy.is_shutdown()
@@ -153,7 +155,8 @@ class DefaultMission(smach.State):
         #     explicit_quat
         # )
         # odom -> map
-        [pos, rot] = tf.listener.lookupTransform("map", "base_link", rospy.Time(0))
+
+        [pos, rot] = self.tf_listener.lookupTransform("map", "base_link", rospy.Time(0))
 
         self.estimated_x_m = pos[0]
         self.estimated_y_m = pos[1]
