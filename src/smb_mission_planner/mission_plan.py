@@ -13,6 +13,7 @@ import math
 class MissionPlan:
     def __init__(self, missions_data, topic_names):
         self.missions_data = missions_data
+        print(self.missions_data)
         self.topic_names = topic_names
 
     def createStateMachine(self):
