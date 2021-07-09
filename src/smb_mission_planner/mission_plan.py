@@ -20,7 +20,7 @@ class MissionPlan:
         with state_machine:
             smach.StateMachine.add(
                 "Mission 1",
-                DefaultMission(self.missions_data["simple"], self.topic_names),
+                DefaultMission(self.missions_data["final"], self.topic_names),
                 transitions={
                     "Completed": "Success",
                     "Aborted": "Failure",
